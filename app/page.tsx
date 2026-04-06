@@ -1,17 +1,17 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { useRef } from "react";
 import { ShoppingCart, Truck, Shield, Star, Phone, MapPin, ChevronDown, Quote } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 // Animation variants for reusable patterns
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 60 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -19,7 +19,7 @@ const staggerContainer = {
   }
 };
 
-const scaleIn = {
+const scaleIn: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
 };
