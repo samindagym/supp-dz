@@ -62,7 +62,7 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-20 overflow-hidden">
         {/* Cinematic Background Image Layer */}
         <motion.div
           className="absolute inset-0 z-0"
@@ -87,36 +87,53 @@ export default function Home() {
           viewport={{ once: true, amount: 0.3 }}
           variants={staggerContainer}
           style={{ y: heroContentY }}
-          className="relative z-20 text-center max-w-5xl mx-auto"
+          className="relative z-20 text-center max-w-7xl mx-auto px-4"
         >
-          <motion.div variants={fadeInUp} className="mb-8">
+          {/* Animated Glow Background behind title */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-green-500/20 blur-[120px] rounded-full animate-dynamic-glow pointer-events-none -z-10" />
+
+          <motion.div variants={fadeInUp} className="mb-10">
             <motion.span
               animate={{
-                boxShadow: ["0 0 0px rgba(74, 222, 128, 0)", "0 0 20px rgba(74, 222, 128, 0.2)", "0 0 0px rgba(74, 222, 128, 0)"]
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="inline-block px-6 py-2 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-sm font-bold tracking-widest uppercase"
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="inline-block px-10 py-3 bg-gradient-to-r from-green-500/10 via-emerald-500/20 to-green-500/10 border border-green-500/40 rounded-full text-green-400 text-[10px] font-bold tracking-[0.4em] uppercase"
             >
-              🇩🇿 N°1 en Algérie - PERFORMANCE PREMIUM
+              🇩🇿 Performance Premium DZ
             </motion.span>
           </motion.div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="text-6xl md:text-[5.5rem] font-black leading-tight mb-8 tracking-tighter"
-          >
-            L&apos;Excellence en
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-400 to-teal-500">
+          <div className="overflow-hidden mb-6">
+            <motion.h1
+              variants={{
+                hidden: { y: "100%" },
+                visible: { y: 0, transition: { duration: 1, ease: [0.33, 1, 0.68, 1] } }
+              }}
+              className="text-4xl md:text-[7rem] font-bold leading-[0.9] tracking-tight md:tracking-[-0.05em] uppercase"
+            >
+              L&apos;Excellence en
+            </motion.h1>
+          </div>
+
+          <div className="overflow-hidden mb-12">
+            <motion.h1
+              variants={{
+                hidden: { y: "100%" },
+                visible: { y: 0, transition: { duration: 1, delay: 0.2, ease: [0.33, 1, 0.68, 1] } }
+              }}
+              className="text-4xl md:text-[7rem] font-bold leading-[0.9] tracking-tight md:tracking-[-0.05em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-gray-500"
+            >
               Nutrition Sportive
-            </span>
-          </motion.h1>
+            </motion.h1>
+          </div>
 
           <motion.p
             variants={fadeInUp}
-            className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed"
+            className="text-lg md:text-2xl text-gray-400 font-medium max-w-2xl mx-auto mb-16 leading-relaxed font-space"
           >
-            Les meilleurs suppléments pour atteindre vos objectifs fitness.
-            Livraison dans les 58 wilayas. Paiement à la réception.
+            Les meilleurs suppléments pour une performance inégalée.
+            <span className="block italic text-green-500/80 font-bold mt-2">Livraison Express dans les 58 Wilayas.</span>
           </motion.p>
 
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -124,15 +141,15 @@ export default function Home() {
               href="#products"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="px-10 py-5 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full font-bold text-lg hover:shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-all flex items-center justify-center gap-2"
+              className="px-12 py-6 bg-white text-black rounded-full font-bold text-lg hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all flex items-center justify-center gap-2 group"
             >
-              Nos Produits <ShoppingCart className="w-5 h-5" />
+              Nos Produits <ShoppingCart className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
             <motion.a
-              href="https://wa.me/213555555555"
+              href="#contact"
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.05)" }}
               whileTap={{ scale: 0.98 }}
-              className="px-10 py-5 border border-white/20 backdrop-blur-md rounded-full font-bold text-lg hover:border-green-500/50 transition-all flex items-center justify-center gap-2 group"
+              className="px-12 py-6 border border-white/20 backdrop-blur-md rounded-full font-bold text-lg hover:border-green-500/50 transition-all flex items-center justify-center gap-2 group"
             >
               <Phone className="w-5 h-5 text-green-500 group-hover:animate-pulse" /> Commander
             </motion.a>
@@ -155,8 +172,9 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 px-4">
+      <section className="py-32 px-4 relative">
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-emerald-500/10 blur-[150px] animate-dynamic-glow -z-10" />
+
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -164,12 +182,12 @@ export default function Home() {
           variants={staggerContainer}
           className="max-w-6xl mx-auto"
         >
-          <motion.div variants={fadeInUp} className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Ce Que Disent Nos Clients</h2>
-            <p className="text-gray-400">+10,000 clients satisfaits à travers l'Algérie</p>
+          <motion.div variants={fadeInUp} className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 uppercase tracking-tight">Leurs Avis</h2>
+            <p className="text-gray-400 text-lg md:text-xl font-space uppercase tracking-[0.2em]">+10,000 Athlètes Satisfaits</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               { name: "Amine B.", city: "Alger", text: "Produits authentiques et livraison rapide. J'ai gagné 5kg de muscle en 2 mois!", rating: 5 },
               { name: "Karim M.", city: "Oran", text: "Le meilleur service en Algérie. Prix compétitifs et équipe très réactive sur WhatsApp.", rating: 5 },
@@ -178,23 +196,23 @@ export default function Home() {
               <motion.div
                 key={i}
                 variants={scaleIn}
-                whileHover={{ y: -5 }}
-                className="p-6 rounded-2xl bg-gray-800/50 border border-gray-700"
+                whileHover={{ y: -10 }}
+                className="p-10 rounded-[2rem] bg-white/[0.03] border border-white/[0.05] relative group"
               >
-                <div className="flex gap-1 mb-4">
+                <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                    <Star key={i} className="w-4 h-4 fill-green-500 text-green-500" />
                   ))}
                 </div>
-                <Quote className="w-8 h-8 text-green-500/30 mb-4" />
-                <p className="text-gray-300 mb-4">&quot;{testimonial.text}&quot;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center font-bold">
+                <Quote className="absolute top-10 right-10 w-16 h-16 text-green-500/10" />
+                <p className="text-gray-300 text-lg leading-relaxed mb-8 font-space italic">&quot;{testimonial.text}&quot;</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center font-bold text-xl">
                     {testimonial.name[0]}
                   </div>
                   <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500">{testimonial.city}</p>
+                    <p className="font-bold text-lg uppercase tracking-tight">{testimonial.name}</p>
+                    <p className="text-sm text-gray-500 font-space">{testimonial.city}</p>
                   </div>
                 </div>
               </motion.div>
@@ -203,8 +221,10 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} id="features" className="py-24 px-4 bg-gradient-to-b from-black to-gray-900">
+    <section ref={featuresRef} id="features" className="py-32 px-4 relative overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-green-500/10 blur-[180px] animate-dynamic-glow -z-10" />
+
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -212,22 +232,24 @@ export default function Home() {
           variants={staggerContainer}
           className="max-w-6xl mx-auto"
         >
-          <motion.div variants={fadeInUp} className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Pourquoi Nous Choisir ?</h2>
-            <p className="text-gray-400">La confiance de +10,000 clients à travers l'Algérie</p>
+          <motion.div variants={fadeInUp} className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 uppercase tracking-[-0.02em]">Pourquoi Nous ?</h2>
+            <p className="text-gray-400 text-lg md:text-xl font-space uppercase tracking-[0.2em]">+10k Clients Satisfaits</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 variants={scaleIn}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="p-8 rounded-2xl bg-gray-800/50 border border-gray-700 hover:border-green-500/50 transition-all"
+                whileHover={{ y: -15, scale: 1.02 }}
+                className="group p-12 rounded-[2.5rem] bg-white/[0.03] border border-white/[0.05] hover:border-green-500/40 transition-all duration-500"
               >
-                <feature.icon className="w-12 h-12 text-green-400 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-400">{feature.desc}</p>
+                <div className="w-20 h-20 bg-green-500/10 rounded-2xl flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-green-500/20 transition-all duration-500">
+                  <feature.icon className="w-10 h-10 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 uppercase tracking-tight">{feature.title}</h3>
+                <p className="text-gray-400 text-lg leading-relaxed font-space">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -243,48 +265,50 @@ export default function Home() {
           variants={staggerContainer}
           className="max-w-6xl mx-auto"
         >
-          <motion.div variants={fadeInUp} className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Nos Meilleurs Ventes</h2>
-            <p className="text-gray-400">Les suppléments les plus populaires en Algérie</p>
+          <motion.div variants={fadeInUp} className="text-center mb-24">
+            <h2 className="text-4xl md:text-8xl font-bold mb-6 uppercase tracking-[-0.04em] leading-tight">Best Sellers</h2>
+            <p className="text-gray-400 text-lg md:text-xl font-space uppercase tracking-[0.3em]">La Qualité Sans Compromis</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {products.map((product, index) => (
               <motion.div
                 key={index}
                 variants={scaleIn}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative p-6 rounded-2xl bg-gray-800/50 border border-gray-700 hover:border-green-500/50 transition-all overflow-hidden"
+                whileHover={{ y: -15, scale: 1.02 }}
+                className="group relative p-8 rounded-[3rem] bg-white/[0.03] border border-white/[0.05] hover:border-green-500/40 transition-all duration-700 overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 <div className="relative">
-                  <div className="aspect-square mb-6 overflow-hidden rounded-xl bg-white flex items-center justify-center p-6 group-hover:scale-[1.03] transition-transform duration-500 shadow-inner">
+                  <div className="aspect-square mb-10 overflow-hidden rounded-[2.5rem] bg-white flex items-center justify-center p-10 group-hover:scale-105 transition-transform duration-700 shadow-2xl">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain filter drop-shadow-md"
+                      className="w-full h-full object-contain filter drop-shadow-2xl"
                     />
                   </div>
 
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-green-500 uppercase tracking-widest">{product.brand}</span>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
-                      <span className="text-xs font-medium">{product.rating}</span>
+                  <div className="flex items-center justify-between mb-4 px-2">
+                    <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">{product.brand}</span>
+                    <div className="flex items-center gap-1 bg-green-500/10 px-3 py-1 rounded-full">
+                      <Star className="w-3 h-3 fill-green-500 text-green-500" />
+                      <span className="text-xs font-bold text-green-400">{product.rating}</span>
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-green-400 transition-colors uppercase tracking-tight">{product.name}</h3>
-                  <p className="text-2xl font-black text-white mb-6">{product.price}</p>
+                  <h3 className="text-2xl font-bold mb-6 group-hover:text-green-400 transition-colors uppercase tracking-tight leading-[1.2] px-2">{product.name}</h3>
 
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-green-500/25 transition-all"
-                  >
-                    Commander
-                  </motion.button>
+                  <div className="flex items-center justify-between mt-auto px-2">
+                    <p className="text-3xl font-bold text-white tracking-tighter font-space italic">{product.price}</p>
+                    <motion.button
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="w-14 h-14 bg-green-500 text-black rounded-2xl flex items-center justify-center hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"
+                    >
+                      <ShoppingCart className="w-7 h-7" />
+                    </motion.button>
+                  </div>
                 </div>
               </motion.div>
             ))}
