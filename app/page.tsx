@@ -259,11 +259,11 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="relative">
-                  <div className="aspect-square mb-6 overflow-hidden rounded-xl bg-black/40 flex items-center justify-center p-4 group-hover:scale-105 transition-transform duration-500">
+                  <div className="aspect-square mb-6 overflow-hidden rounded-xl bg-white flex items-center justify-center p-6 group-hover:scale-[1.03] transition-transform duration-500 shadow-inner">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                      className="w-full h-full object-contain filter drop-shadow-md"
                     />
                   </div>
 
