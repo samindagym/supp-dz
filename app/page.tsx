@@ -46,6 +46,17 @@ export default function Home() {
     { name: "Citrulline Malate (250g)", price: "3,000 DA", image: "/products/citrulline_malate.png", rating: 4.8, reviews: 267, brand: "Golden Body" },
   ];
 
+  const WHATSAPP_NUMBER = "213555555555";
+
+  const handleWhatsAppOrder = (productName?: string, price?: string) => {
+    let message = "Bonjour! J'aimerais avoir plus d'informations sur vos suppléments.";
+    if (productName && price) {
+      message = `Bonjour! Je souhaite commander le *${productName}* au prix de *${price}*. Pouvez-vous me confirmer la disponibilité ?`;
+    }
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, "_blank");
+  };
+
   const features = [
     { icon: Truck, title: "Livraison 58 Wilayas", desc: "Livraison rapide partout en Algérie" },
     { icon: Shield, title: "Produits 100% Authentiques", desc: "Certifiés et vérifiés" },
@@ -145,14 +156,14 @@ export default function Home() {
             >
               Nos Produits <ShoppingCart className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
-            <motion.a
-              href="#contact"
+            <motion.button
+              onClick={() => handleWhatsAppOrder()}
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.05)" }}
               whileTap={{ scale: 0.98 }}
               className="px-12 py-6 border border-white/20 backdrop-blur-md rounded-full font-bold text-lg hover:border-green-500/50 transition-all flex items-center justify-center gap-2 group"
             >
               <Phone className="w-5 h-5 text-green-500 group-hover:animate-pulse" /> Commander
-            </motion.a>
+            </motion.button>
           </motion.div>
 
           <motion.div
@@ -302,6 +313,7 @@ export default function Home() {
                   <div className="flex items-center justify-between mt-auto px-2">
                     <p className="text-3xl font-bold text-white tracking-tighter font-space italic">{product.price}</p>
                     <motion.button
+                      onClick={() => handleWhatsAppOrder(product.name, product.price)}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       whileTap={{ scale: 0.9 }}
                       className="w-14 h-14 bg-green-500 text-black rounded-2xl flex items-center justify-center hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"
@@ -397,14 +409,14 @@ export default function Home() {
             Commandez maintenant et recevez vos produits dans 2-5 jours ouvrables
           </motion.p>
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.a
-              href="https://wa.me/213555555555"
+            <motion.button
+              onClick={() => handleWhatsAppOrder()}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full font-semibold text-lg hover:shadow-lg hover:shadow-green-500/25 transition-all"
             >
               Commander sur WhatsApp
-            </motion.a>
+            </motion.button>
             <motion.a
               href="tel:+213555555555"
               whileHover={{ scale: 1.05 }}

@@ -37,7 +37,8 @@ export default function Navbar() {
           {/* Right Side */}
           <div className="flex items-center gap-6">
             <motion.a
-              href="#contact"
+              href="https://wa.me/213555555555?text=Bonjour!%20J%27aimerais%20avoir%20plus%20d%27informations%20sur%20vos%20suppl%C3%A9ments."
+              target="_blank"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="hidden lg:flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-bold text-sm hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all"
