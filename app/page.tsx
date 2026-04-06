@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
-import { useRef } from "react";
-import { ShoppingCart, Truck, Shield, Star, Phone, MapPin, ChevronDown, Quote } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { ShoppingCart, Truck, Shield, Star, Phone, MapPin, ChevronDown, Quote, Plus } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import CartDrawer from "@/components/CartDrawer";
 
 // Animation variants for reusable patterns
 const fadeInUp: Variants = {
@@ -37,6 +38,52 @@ export default function Home() {
   const heroImageScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
   const heroContentY = useTransform(heroProgress, [0, 1], [0, -50]);
 
+  // Cart State Management
+  const [cart, setCart] = useState<{ name: string; price: string; image: string; quantity: number }[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Load cart from localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem("supp_dz_cart");
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (err) {
+        console.error("Cart LOAD ERROR:", err);
+      }
+    }
+  }, []);
+
+  // Save cart to localStorage
+  useEffect(() => {
+    localStorage.setItem("supp_dz_cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (product: { name: string; price: string; image: string }) => {
+    setCart(currItems => {
+      const existingItem = currItems.find(item => item.name === product.name);
+      if (existingItem) {
+        return currItems.map(item =>
+          item.name === product.name ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...currItems, { ...product, quantity: 1 }];
+    });
+    setIsCartOpen(true); // Auto-open cart trigger
+  };
+
+  const updateQuantity = (name: string, delta: number) => {
+    setCart(currItems =>
+      currItems
+        .map(item => (item.name === name ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item))
+        .filter(item => item.quantity > 0)
+    );
+  };
+
+  const removeItem = (name: string) => {
+    setCart(currItems => currItems.filter(item => item.name !== name));
+  };
+
   const products = [
     { name: "Muscle Fuel Anabolic (4kg)", price: "12,500 DA", image: "/products/muscle_fuel_anabolic.png", rating: 4.9, reviews: 234, brand: "Golden Body" },
     { name: "Blue Lab Whey (1kg)", price: "6,800 DA", image: "/products/blue_lab_whey.png", rating: 4.8, reviews: 189, brand: "Golden Body" },
@@ -65,7 +112,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden selection:bg-green-500/30">
-      <Navbar />
+      <Navbar cartCount={cart.length} onCartClick={() => setIsCartOpen(true)} />
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        items={cart}
+        updateQuantity={updateQuantity}
+        removeItem={removeItem}
+      />
       {/* Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-emerald-600 origin-left z-50"
@@ -312,14 +366,26 @@ export default function Home() {
 
                   <div className="flex items-center justify-between mt-auto px-2">
                     <p className="text-3xl font-bold text-white tracking-tighter font-space italic">{product.price}</p>
-                    <motion.button
-                      onClick={() => handleWhatsAppOrder(product.name, product.price)}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-14 h-14 bg-green-500 text-black rounded-2xl flex items-center justify-center hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"
-                    >
-                      <ShoppingCart className="w-7 h-7" />
-                    </motion.button>
+                    <div className="flex items-center gap-3">
+                      <motion.button
+                        onClick={() => handleWhatsAppOrder(product.name, product.price)}
+                        whileHover={{ scale: 1.1, rotate: -5 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="w-12 h-12 bg-white/5 border border-white/10 text-white rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all"
+                        title="Commander Direct"
+                      >
+                        <Phone className="w-5 h-5" />
+                      </motion.button>
+                      <motion.button
+                        onClick={() => addToCart(product)}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="w-14 h-14 bg-green-500 text-black rounded-2xl flex items-center justify-center hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"
+                        title="Ajouter au Panier"
+                      >
+                        <Plus className="w-7 h-7" />
+                      </motion.button>
+                    </div>
                   </div>
                 </div>
               </motion.div>

@@ -4,7 +4,12 @@ import { motion } from "framer-motion";
 import { ShoppingCart, Menu, X, Phone } from "lucide-react";
 import { useState } from "react";
 
-export default function Navbar() {
+interface NavbarProps {
+  cartCount: number;
+  onCartClick: () => void;
+}
+
+export default function Navbar({ cartCount, onCartClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -47,9 +52,20 @@ export default function Navbar() {
               <span>Commander</span>
             </motion.a>
 
-            <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
-              <ShoppingCart className="w-7 h-7" />
-              <span className="absolute top-0 right-0 w-5 h-5 bg-green-500 rounded-full text-[10px] font-black flex items-center justify-center text-black border-2 border-black">0</span>
+            <button 
+              onClick={onCartClick}
+              className="relative p-2 text-gray-400 hover:text-white transition-colors group"
+            >
+              <ShoppingCart className="w-7 h-7 group-hover:scale-110 transition-transform" />
+              {cartCount > 0 && (
+                <motion.span 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-0 right-0 w-5 h-5 bg-green-500 rounded-full text-[10px] font-black flex items-center justify-center text-black border-2 border-black"
+                >
+                  {cartCount}
+                </motion.span>
+              )}
             </button>
 
             {/* Mobile Menu Button */}
