@@ -3,22 +3,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, ShoppingCart, Trash2, Phone } from "lucide-react";
 
-interface CartItem {
-  name: string;
-  price: string;
-  image: string;
-  quantity: number;
-}
+import { useCart } from "@/lib/CartContext";
 
-interface CartDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  items: CartItem[];
-  updateQuantity: (name: string, delta: number) => void;
-  removeItem: (name: string) => void;
-}
-
-export default function CartDrawer({ isOpen, onClose, items, updateQuantity, removeItem }: CartDrawerProps) {
+export default function CartDrawer() {
+  const { cart: items, isCartOpen: isOpen, setIsCartOpen, updateQuantity, removeItem } = useCart();
+  
+  const onClose = () => setIsCartOpen(false);
   const parsePrice = (priceStr: string) => parseInt(priceStr.replace(/[^0-9]/g, ""));
   
   const subtotal = items.reduce((acc, item) => acc + parsePrice(item.price) * item.quantity, 0);

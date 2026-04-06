@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   description: "Les meilleurs suppléments pour atteindre vos objectifs fitness. Livraison dans les 58 wilayas. Paiement à la livraison.",
 };
 
+import { CartProvider } from "@/lib/CartContext";
+import CartDrawer from "@/components/CartDrawer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +32,10 @@ export default function RootLayout({
       className={`${syncopate.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-space bg-black text-white selection:bg-green-500/30 selection:text-green-400">
-        {children}
+        <CartProvider>
+          {children}
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

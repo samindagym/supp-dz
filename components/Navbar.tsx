@@ -3,14 +3,11 @@
 import { motion } from "framer-motion";
 import { ShoppingCart, Menu, X, Phone } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/lib/CartContext";
 
-interface NavbarProps {
-  cartCount: number;
-  onCartClick: () => void;
-}
-
-export default function Navbar({ cartCount, onCartClick }: NavbarProps) {
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { cartCount, setIsCartOpen } = useCart();
 
   return (
     <motion.nav
@@ -53,7 +50,7 @@ export default function Navbar({ cartCount, onCartClick }: NavbarProps) {
             </motion.a>
 
             <button 
-              onClick={onCartClick}
+              onClick={() => setIsCartOpen(true)}
               className="relative p-2 text-gray-400 hover:text-white transition-colors group"
             >
               <ShoppingCart className="w-7 h-7 group-hover:scale-110 transition-transform" />

@@ -1,10 +1,12 @@
 "use client";
 
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, type Variants } from "framer-motion";
+import { useRef } from "react";
 import { ShoppingCart, Truck, Shield, Star, Phone, MapPin, ChevronDown, Quote, Plus } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import CartDrawer from "@/components/CartDrawer";
+import { products } from "@/lib/products";
+import { useCart } from "@/lib/CartContext";
+import Link from "next/link";
 
 // Animation variants for reusable patterns
 const fadeInUp: Variants = {
@@ -38,60 +40,7 @@ export default function Home() {
   const heroImageScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
   const heroContentY = useTransform(heroProgress, [0, 1], [0, -50]);
 
-  // Cart State Management
-  const [cart, setCart] = useState<{ name: string; price: string; image: string; quantity: number }[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  // Load cart from localStorage
-  useEffect(() => {
-    const savedCart = localStorage.getItem("supp_dz_cart");
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (err) {
-        console.error("Cart LOAD ERROR:", err);
-      }
-    }
-  }, []);
-
-  // Save cart to localStorage
-  useEffect(() => {
-    localStorage.setItem("supp_dz_cart", JSON.stringify(cart));
-  }, [cart]);
-
-  const addToCart = (product: { name: string; price: string; image: string }) => {
-    setCart(currItems => {
-      const existingItem = currItems.find(item => item.name === product.name);
-      if (existingItem) {
-        return currItems.map(item =>
-          item.name === product.name ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...currItems, { ...product, quantity: 1 }];
-    });
-    setIsCartOpen(true); // Auto-open cart trigger
-  };
-
-  const updateQuantity = (name: string, delta: number) => {
-    setCart(currItems =>
-      currItems
-        .map(item => (item.name === name ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item))
-        .filter(item => item.quantity > 0)
-    );
-  };
-
-  const removeItem = (name: string) => {
-    setCart(currItems => currItems.filter(item => item.name !== name));
-  };
-
-  const products = [
-    { name: "Muscle Fuel Anabolic (4kg)", price: "12,500 DA", image: "/products/muscle_fuel_anabolic.png", rating: 4.9, reviews: 234, brand: "Golden Body" },
-    { name: "Blue Lab Whey (1kg)", price: "6,800 DA", image: "/products/blue_lab_whey.png", rating: 4.8, reviews: 189, brand: "Golden Body" },
-    { name: "Pure Whey (2kg)", price: "12,700 DA", image: "/products/pure_whey.png", rating: 4.7, reviews: 156, brand: "Golden Body" },
-    { name: "Anabolic Isolate (1kg)", price: "7,400 DA", image: "/products/anabolic_isolate.png", rating: 4.9, reviews: 312, brand: "Golden Body" },
-    { name: "Creatine (350g)", price: "4,500 DA", image: "/products/creatine.png", rating: 4.6, reviews: 98, brand: "Golden Body" },
-    { name: "Citrulline Malate (250g)", price: "3,000 DA", image: "/products/citrulline_malate.png", rating: 4.8, reviews: 267, brand: "Golden Body" },
-  ];
+  const { addToCart } = useCart();
 
   const WHATSAPP_NUMBER = "213555555555";
 
@@ -112,14 +61,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden selection:bg-green-500/30">
-      <Navbar cartCount={cart.length} onCartClick={() => setIsCartOpen(true)} />
-      <CartDrawer 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
-        items={cart}
-        updateQuantity={updateQuantity}
-        removeItem={removeItem}
-      />
+      <Navbar />
       {/* Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-emerald-600 origin-left z-50"
@@ -336,9 +278,9 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {products.map((product, index) => (
+            {products.map((product) => (
               <motion.div
-                key={index}
+                key={product.id}
                 variants={scaleIn}
                 whileHover={{ y: -15, scale: 1.02 }}
                 className="group relative p-8 rounded-[3rem] bg-white/[0.03] border border-white/[0.05] hover:border-green-500/40 transition-all duration-700 overflow-hidden"
@@ -346,13 +288,15 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 <div className="relative">
-                  <div className="aspect-square mb-10 overflow-hidden rounded-[2.5rem] bg-white flex items-center justify-center p-10 group-hover:scale-105 transition-transform duration-700 shadow-2xl">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-contain filter drop-shadow-2xl"
-                    />
-                  </div>
+                  <Link href={`/product/${product.id}`} className="block">
+                    <div className="aspect-square mb-10 overflow-hidden rounded-[2.5rem] bg-white flex items-center justify-center p-10 group-hover:scale-105 transition-transform duration-700 shadow-2xl">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-contain filter drop-shadow-2xl"
+                      />
+                    </div>
+                  </Link>
 
                   <div className="flex items-center justify-between mb-4 px-2">
                     <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">{product.brand}</span>
@@ -362,7 +306,9 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold mb-6 group-hover:text-green-400 transition-colors uppercase tracking-tight leading-[1.2] px-2">{product.name}</h3>
+                  <Link href={`/product/${product.id}`}>
+                    <h3 className="text-2xl font-bold mb-6 group-hover:text-green-400 transition-colors uppercase tracking-tight leading-[1.2] px-2">{product.name}</h3>
+                  </Link>
 
                   <div className="flex items-center justify-between mt-auto px-2">
                     <p className="text-3xl font-bold text-white tracking-tighter font-space italic">{product.price}</p>
