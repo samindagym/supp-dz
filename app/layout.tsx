@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 
 import { CartProvider } from "@/lib/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import CustomCursor from "@/components/CustomCursor";
 
 export default function RootLayout({
   children,
@@ -33,6 +34,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-space bg-black text-white selection:bg-green-500/30 selection:text-green-400">
         <CartProvider>
+          <CustomCursor />
           {children}
           <CartDrawer />
         </CartProvider>

@@ -3,11 +3,13 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ShoppingCart, ArrowLeft, ShieldCheck, Zap, Thermometer, FlaskConical, Beaker, CheckCircle2, ChevronRight, Scale, Info } from "lucide-react";
+import { ShoppingCart, ArrowLeft, ShieldCheck, Zap, Thermometer, FlaskConical, Beaker, CheckCircle2, ChevronRight, Scale, Info, BarChart3 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { products, Product } from "@/lib/products";
 import { useCart } from "@/lib/CartContext";
+import ComparisonHUD from "@/components/ComparisonHUD";
 
 export default function ProductLanding() {
   const params = useParams();
@@ -17,12 +19,32 @@ export default function ProductLanding() {
   
   const [activeTab, setActiveTab] = useState<'benefits' | 'nutrition' | 'science'>('benefits');
   const [isScanned, setIsScanned] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationData, setVerificationData] = useState<{ id: string, purity: string } | null>(null);
+  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
+
+  const scannerY = useTransform(scrollYProgress, [0, 0.3], ["-10%", "110%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.05]);
+
+  const handleVerifyBatch = () => {
+    if (isVerifying || verificationData) return;
+    setIsVerifying(true);
+    
+    // Simulate high-tech verification
+    setTimeout(() => {
+      setVerificationData({
+        id: `GB-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+        purity: (99 + Math.random() * 0.9).toFixed(2) + "%"
+      });
+      setIsVerifying(false);
+    }, 2000);
+  };
 
   if (!product) return (
     <div className="min-h-screen flex items-center justify-center bg-black">
@@ -34,7 +56,7 @@ export default function ProductLanding() {
   );
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-black text-white selection:bg-green-500/30">
+    <div ref={containerRef} className="relative min-h-screen bg-black text-white selection:bg-green-500/30">
       <Navbar />
 
       <main className="pt-32 pb-20 px-4">
@@ -49,35 +71,62 @@ export default function ProductLanding() {
           <div className="grid lg:grid-cols-2 gap-20 items-start">
             
             {/* Left: Interactive Lab Scanner View */}
-            <div className="relative sticky top-32">
-              {/* Product ID Label */}
-              <div className="absolute top-0 left-0 z-20 flex flex-col gap-1">
-                <span className="text-[10px] font-black text-green-500/50 uppercase tracking-[0.4em]">Unit ID: GB-{product.id.substring(0,6).toUpperCase()}</span>
-                <span className="text-[10px] font-black text-green-500/50 uppercase tracking-[0.4em]">Status: Verified Amino Matrix</span>
-              </div>
-
+            <div className="relative lg:sticky lg:top-32">
               {/* The Scanner Frame */}
-              <div className="relative aspect-square rounded-[3rem] bg-zinc-900/50 border border-white/5 overflow-hidden group">
+              <div className="relative aspect-square rounded-[3rem] bg-zinc-900/50 border border-white/5 overflow-hidden group tactical-target">
+                {/* Product ID Label - Centered */}
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col gap-1 items-center w-full">
+                  <span className="text-[10px] font-black text-green-500/50 uppercase tracking-[0.4em]">Unit ID: GB-{product.id.substring(0,6).toUpperCase()}</span>
+                  <span className="text-[10px] font-black text-green-500/50 uppercase tracking-[0.4em]">Status: Verified Amino Matrix</span>
+                </div>
+                
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,197,94,0.05)_0%,transparent_70%)]" />
                 
-                {/* 3D Product Image */}
-                <motion.img 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-contain p-12 drop-shadow-[0_0_50px_rgba(34,197,94,0.15)] group-hover:scale-105 transition-transform duration-1000"
-                />
-
-                {/* The Scanner Ray */}
+                {/* 3D Product Image with Reveal Effect */}
                 <motion.div 
-                  initial={{ top: "-10%" }}
-                  animate={{ top: "110%" }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="relative w-full h-full p-12 overflow-hidden"
+                  style={{ scale: imageScale }}
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ 
+                      scale: 1, 
+                      opacity: 1,
+                      filter: isScanned ? "contrast(1.1) brightness(1.1)" : "contrast(1) brightness(1)"
+                    }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="w-full h-full relative"
+                  >
+                    <Image 
+                      src={product.image} 
+                      alt={product.name}
+                      fill
+                      priority
+                      quality={90}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-contain drop-shadow-[0_0_50px_rgba(34,197,94,0.15)] group-hover:scale-105 transition-all duration-1000"
+                    />
+                  </motion.div>
+                  
+                  {/* Digital Overlay when scanned */}
+                  <AnimatePresence>
+                    {isScanned && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-green-500 pointer-events-none mix-blend-overlay"
+                      />
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                {/* The Scanner Ray - Linked to Scroll for Better Feel */}
+                <motion.div 
+                  style={{ top: scannerY }}
                   onUpdate={(latest) => {
                     const top = typeof latest.top === 'string' ? parseFloat(latest.top) : 0;
-                    if (top > 20 && top < 80) setIsScanned(true);
+                    if (top > 10 && top < 90) setIsScanned(true);
                   }}
                   className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-green-500 to-transparent z-10 shadow-[0_0_20px_rgba(34,197,94,1)]"
                 />
@@ -89,21 +138,45 @@ export default function ProductLanding() {
                 </div>
               </div>
 
-              {/* Lab Certification Badge */}
+              {/* Lab Certification Badge - NOW INTERACTIVE */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1 }}
                 className="mt-8 flex items-center justify-center"
               >
-                <div className="flex items-center gap-4 px-6 py-4 bg-zinc-900 border border-green-500/20 rounded-2xl relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-green-500/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                  <ShieldCheck className="w-8 h-8 text-green-500 animate-pulse" />
-                  <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-green-400">SUPP.DZ LAB CERTIFIED</h4>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Purity Index: 99.9% Verified</p>
+                <button 
+                  onClick={handleVerifyBatch}
+                  disabled={isVerifying}
+                  className={`flex items-center gap-4 px-6 py-4 bg-zinc-900 border transition-all duration-500 rounded-2xl relative overflow-hidden group ${
+                    verificationData ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.2)]' : 'border-green-500/20 hover:border-green-500/50'
+                  }`}
+                >
+                  {/* Scanning Animation */}
+                  {isVerifying && (
+                    <motion.div 
+                      initial={{ left: "-100%" }}
+                      animate={{ left: "100%" }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                      className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-green-500/10 to-transparent skew-x-12 z-0"
+                    />
+                  )}
+
+                  <div className="relative z-10 flex items-center gap-4">
+                    <div className="relative">
+                        <ShieldCheck className={`w-8 h-8 transition-colors duration-500 ${isVerifying ? 'text-yellow-500 animate-spin-slow' : verificationData ? 'text-green-500' : 'text-green-500/50'}`} />
+                        {isVerifying && <motion.div layoutId="verify-glow" className="absolute inset-0 bg-yellow-500/20 blur-md rounded-full" />}
+                    </div>
+                    <div className="text-left">
+                        <h4 className="text-xs font-black uppercase tracking-widest text-green-400">
+                            {isVerifying ? 'ANALYSE EN COURS...' : verificationData ? 'BATCH VÉRIFIÉ CONFIRMÉ' : 'SUPP.DZ LAB CERTIFIED'}
+                        </h4>
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">
+                            {isVerifying ? 'Synchronisation des molécules...' : verificationData ? `ID: ${verificationData.id} // pureté: ${verificationData.purity}` : 'Cliquer pour vérifier le batch actuel'}
+                        </p>
+                    </div>
                   </div>
-                </div>
+                </button>
               </motion.div>
             </div>
 
@@ -127,9 +200,10 @@ export default function ProductLanding() {
                 {product.labStats.map((stat, i) => (
                   <motion.div
                     key={stat.label}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + (i * 0.1) }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
                     className="p-6 rounded-3xl bg-zinc-900/50 border border-white/5 group hover:border-green-500/30 transition-all relative overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-30 transition-opacity">
@@ -240,6 +314,15 @@ export default function ProductLanding() {
                 </div>
                 <div className="flex gap-4 w-full sm:w-auto">
                     <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsComparisonOpen(true)}
+                      className="flex-1 sm:flex-none px-8 py-6 bg-white/5 border border-white/10 text-white rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 hover:border-green-500/30 transition-all flex items-center justify-center gap-3"
+                    >
+                      <BarChart3 className="w-4 h-4 text-green-500" />
+                      Analyse Comparative
+                    </motion.button>
+                    <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => addToCart(product)}
@@ -327,6 +410,11 @@ export default function ProductLanding() {
           <span>© 2026 SUPP.DZ LAB SYSTEMS</span>
         </div>
       </footer>
+       <ComparisonHUD 
+        isOpen={isComparisonOpen} 
+        onClose={() => setIsComparisonOpen(false)} 
+        baseProduct={product}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, Menu, X, Phone } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/CartContext";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,21 +20,22 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center group-hover:rotate-[10deg] transition-transform duration-500">
               <ShoppingCart className="w-6 h-6 text-black" />
             </div>
             <span className="text-2xl font-bold tracking-[-0.05em] uppercase">
               SUPP<span className="text-green-500">.dz</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-10">
-            <a href="#hero" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Accueil</a>
-            <a href="#products" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Produits</a>
-            <a href="#features" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Avantages</a>
-            <a href="#contact" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Contact</a>
+            <Link href="/" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Accueil</Link>
+            <Link href="/#products" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Produits</Link>
+            <Link href="/#features" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Avantages</Link>
+            <Link href="/#diagnostic" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Diagnostique</Link>
+            <Link href="/#contact" className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">Contact</Link>
           </div>
 
           {/* Right Side */}
@@ -80,10 +82,11 @@ export default function Navbar() {
             className="md:hidden py-10 border-t border-white/5 mt-4"
           >
             <div className="flex flex-col items-center gap-8">
-              <a href="#hero" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Accueil</a>
-              <a href="#products" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Produits</a>
-              <a href="#features" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Avantages</a>
-              <a href="#contact" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Contact</a>
+              <Link href="/" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Accueil</Link>
+              <Link href="/#products" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Produits</Link>
+              <Link href="/#features" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Avantages</Link>
+              <Link href="/#diagnostic" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Diagnostique</Link>
+              <Link href="/#contact" onClick={() => setIsOpen(false)} className="text-xl font-bold uppercase tracking-widest text-gray-400 hover:text-white">Contact</Link>
             </div>
           </motion.div>
         )}

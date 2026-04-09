@@ -4,9 +4,13 @@ import { motion, useScroll, useTransform, type Variants } from "framer-motion";
 import { useRef } from "react";
 import { ShoppingCart, Truck, Shield, Star, Phone, MapPin, ChevronDown, Quote, Plus } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 import { products } from "@/lib/products";
 import { useCart } from "@/lib/CartContext";
 import Link from "next/link";
+
+import DiagnosticQuiz from "@/components/DiagnosticQuiz";
+import ProductCatalog from "@/components/ProductCatalog";
 
 // Animation variants for reusable patterns
 const fadeInUp: Variants = {
@@ -60,7 +64,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden selection:bg-green-500/30">
+    <div className="relative min-h-screen bg-black text-white overflow-x-hidden selection:bg-green-500/30">
       <Navbar />
       {/* Progress Bar */}
       <motion.div
@@ -81,9 +85,12 @@ export default function Home() {
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black z-10" />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10 opacity-60" />
-          <img
+          <Image
             src="/hero/supplement_hero.png"
             alt="Premium Supplements"
+            fill
+            priority
+            quality={85}
             className="w-full h-full object-cover brightness-[50%] contrast-[110%]"
           />
         </motion.div>
@@ -263,81 +270,24 @@ export default function Home() {
         </motion.div>
       </section>
 
+      <DiagnosticQuiz />
+
       {/* Products Section */}
       <section ref={productsRef} id="products" className="py-24 px-4">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={staggerContainer}
-          className="max-w-6xl mx-auto"
-        >
-          <motion.div variants={fadeInUp} className="text-center mb-24">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp} 
+            className="text-center mb-24"
+          >
             <h2 className="text-4xl md:text-8xl font-bold mb-6 uppercase tracking-[-0.04em] leading-tight">Best Sellers</h2>
             <p className="text-gray-400 text-lg md:text-xl font-space uppercase tracking-[0.3em]">La Qualité Sans Compromis</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {products.map((product) => (
-              <motion.div
-                key={product.id}
-                variants={scaleIn}
-                whileHover={{ y: -15, scale: 1.02 }}
-                className="group relative p-8 rounded-[3rem] bg-white/[0.03] border border-white/[0.05] hover:border-green-500/40 transition-all duration-700 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                <div className="relative">
-                  <Link href={`/product/${product.id}`} className="block">
-                    <div className="aspect-square mb-10 overflow-hidden rounded-[2.5rem] bg-white flex items-center justify-center p-10 group-hover:scale-105 transition-transform duration-700 shadow-2xl">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-contain filter drop-shadow-2xl"
-                      />
-                    </div>
-                  </Link>
-
-                  <div className="flex items-center justify-between mb-4 px-2">
-                    <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">{product.brand}</span>
-                    <div className="flex items-center gap-1 bg-green-500/10 px-3 py-1 rounded-full">
-                      <Star className="w-3 h-3 fill-green-500 text-green-500" />
-                      <span className="text-xs font-bold text-green-400">{product.rating}</span>
-                    </div>
-                  </div>
-
-                  <Link href={`/product/${product.id}`}>
-                    <h3 className="text-2xl font-bold mb-6 group-hover:text-green-400 transition-colors uppercase tracking-tight leading-[1.2] px-2">{product.name}</h3>
-                  </Link>
-
-                  <div className="flex items-center justify-between mt-auto px-2">
-                    <p className="text-3xl font-bold text-white tracking-tighter font-space italic">{product.price}</p>
-                    <div className="flex items-center gap-3">
-                      <motion.button
-                        onClick={() => handleWhatsAppOrder(product.name, product.price)}
-                        whileHover={{ scale: 1.1, rotate: -5 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-12 h-12 bg-white/5 border border-white/10 text-white rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all"
-                        title="Commander Direct"
-                      >
-                        <Phone className="w-5 h-5" />
-                      </motion.button>
-                      <motion.button
-                        onClick={() => addToCart(product)}
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-14 h-14 bg-green-500 text-black rounded-2xl flex items-center justify-center hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"
-                        title="Ajouter au Panier"
-                      >
-                        <Plus className="w-7 h-7" />
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+          <ProductCatalog />
+        </div>
       </section>
 
       {/* Contact Section */}
